@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.UIElements;
-using Less3.Hierarchy;
 using System.Collections.Generic;
 using UnityEditor.Callbacks;
 using UnityEditor.UIElements;
@@ -27,7 +26,7 @@ namespace Less3.Hierarchy.Editor
         [OnOpenAsset(1)]
         public static bool DoubleClickAsset(int instanceID, int line)
         {
-            Object obj = EditorUtility.InstanceIDToObject(instanceID);
+            Object obj = EditorUtility.EntityIdToObject(instanceID);
             if (obj is L3Hierarchy asset)
             {
                 OpenForAsset(asset);
@@ -195,8 +194,8 @@ namespace Less3.Hierarchy.Editor
                     int precedingRootIndex = -1;
                     while (d >= 0)
                     {
-                        var n = treeView.GetItemDataForIndex<L3HierarchyNode>(Mathf.Max(0, d));
-                        if (n.parent == null && nodesToMove.Contains(n) == false)
+                        var element = treeView.GetItemDataForIndex<IHierarchyNodeElement>(Mathf.Max(0, d));
+                        if (element is L3HierarchyNode n && n.parent == null && nodesToMove.Contains(n) == false)
                         {
                             precedingRootIndex = d;
                             break;
@@ -207,7 +206,7 @@ namespace Less3.Hierarchy.Editor
                     L3HierarchyNode precedingRootNode = null;
                     if (precedingRootIndex != -1)
                     {
-                        precedingRootNode = treeView.GetItemDataForIndex<L3HierarchyNode>(precedingRootIndex);
+                        precedingRootNode = treeView.GetItemDataForIndex<IHierarchyNodeElement>(precedingRootIndex) as L3HierarchyNode;
                     }
 
                     foreach (var n in nodesToMove)
